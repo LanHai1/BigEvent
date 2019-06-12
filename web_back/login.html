@@ -8,7 +8,8 @@
     <title>大事件-后台登录页</title>
     <link rel="stylesheet" type="text/css" href="css/reset.css">
     <link rel="stylesheet" type="text/css" href="css/iconfont.css">
-    <link rel="stylesheet" type="text/css" href="css/main.css">
+    <link rel="stylesheet" type="text/css" href="css/main.css">\
+    <link rel="stylesheet" href="./js/bootstrap/css/bootstrap.min.css">
 </head>
 
 <body>
@@ -28,8 +29,68 @@
                 <input type="submit" class="input_sub" value="登 录">
             </form>
         </div>
+    </div>
 
-    </div> 
+    <!-- 模态框 -->
+    <!-- Modal -->
+    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="myModalLabel">提示框</h4>
+                </div>
+                <!-- 提示con -->
+                <div class="modal-body"></div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="./js/jquery-1.12.4.min.js"></script>
+    <script src="./js/bootstrap/js/bootstrap.min.js"></script>
+    <script>
+        $(() => {
+            // login handle
+            $(".input_sub").on("click", (e) => {
+                e.preventDefault()
+                let user_name = $(".input_txt").val().trim()
+                let password = $(".input_pass").val().trim()
+
+                // login input not empty
+                if (user_name.length == 0 || password.length == 0) {
+                    $(".modal-body").text("用户名或密码不能为空")
+                    $('#myModal').modal({
+                        keyboard: true
+                    })
+                    return
+                }
+
+                // post ajax
+                $.ajax({
+                    type: "post",
+                    url: "https://autumnfish.cn/big/admin/login",
+                    data: {
+                        user_name: user_name,
+                        password: password
+                    },
+                    success: (data) => {
+                        // judge userAccountCode
+                        if (data.code == 200) {
+                            window.location.href = "./index.html"
+                            return
+                        }
+                        $(".modal-body").text("用户名或密码错误")
+                        $('#myModal').modal({
+                            keyboard: true
+                        })
+                    }
+                })
+            })
+        })
+    </script>
 
 </body>
 
