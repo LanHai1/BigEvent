@@ -44,7 +44,7 @@
         </form>
         <div class="user_center_link">
             <a href="user.html" onclick="setMenu(3,0)" target="main_frame">个人中心</a>
-            <img src="images/2.jpg" alt="person">
+            <img src="images/2.jpg" id="userimg" alt="person">
             <a href="#" id="exit"><i class="iconfont icon-tuichu"></i> 退出</a>
         </div>
     </div>
@@ -126,6 +126,13 @@
     </script>
 
     <script src="./js/bootstrap/js/bootstrap.min.js"></script>
+    <script src="./js/art-template/lib/template-web.js"></script>
+    <!-- temp user info -->
+    <script id="temp_user_info" type="text/html">
+        <img src="{{data.user_pic}}" alt="person">
+        <span>欢迎&nbsp;&nbsp;{{data.nickname}}</span>
+        <b>管理员</b>
+    </script>
     <script>
         $(() => {
             // exit user
@@ -146,6 +153,33 @@
                     }
                 })
             })
+
+            // user infor
+
+            $.ajax({
+                type: "get",
+                url: "https://autumnfish.cn/big/admin/getuser",
+                success: (data) => {
+                    $(".user_info").html(template("temp_user_info", data))
+                        // user img right-top
+                    $("#userimg").attr("src", data.data.user_pic)
+                }
+            })
+
+            // search input
+            $.ajax({
+                type: "get",
+                url: "https://autumnfish.cn/big/admin/search",
+                data: {
+                    page: 1,
+                    perpage: 10
+                },
+                success: function(data) {
+                    // 会话存储
+                    sessionStorage.setItem("searchData", JSON.stringify(data))
+                }
+            });
+
         })
     </script>
 

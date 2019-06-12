@@ -40,7 +40,7 @@
                 <div class="form-group">
                     <label for="inputEmail3" class="col-sm-2 control-label">文章类别：</label>
                     <div class="col-sm-4">
-                        <select class="form-control">
+                        <select class="form-control" id="selectForm">
                             <option>类别一</option>
                             <option>类别二</option>
                             <option>类别三</option>
@@ -77,6 +77,58 @@
             </form>
         </div>
     </div>
+
+    <script>
+        $(() => {
+            // editor
+            let idArray = window.location.search.split("=")
+            let id = parseInt(idArray[1])
+            $.ajax({
+                type: "get",
+                url: "https://autumnfish.cn/big/admin/search",
+                data: {
+                    id: id
+                },
+                success: function(data) {
+                    console.log(data);
+                    // 渲染模版
+                    $("#inputEmail3").attr("value", data.data.title)
+                    $(".article_cover").attr("src", data.data.cover)
+                    $("#dateinput").val(data.data.date)
+                    $("#selectForm").children().eq(data.data.type - 1).prop("selected", true)
+                    $("#rich_content").val(data.data.content)
+                }
+            });
+
+
+
+            // 修改 update
+            $(".btn-success").on("click", (e) => {
+                e.preventDefault()
+
+                // now date
+                let date = new Date()
+
+                $.ajax({
+                    type: "post",
+                    url: "https://autumnfish.cn/big/admin/article_edit",
+                    data: {
+                        id: id,
+                        title: $("#inputEmail3").val(),
+                        cover: $(".article_cover").val(),
+                        type: $("#selectForm option:selected").index() + 1,
+                        date: `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`,
+                        content: $("#rich_content").val()
+                    },
+                    success: function(data) {
+                        console.log(data);
+
+                    }
+                });
+            })
+
+        })
+    </script>
 
 </body>
 
